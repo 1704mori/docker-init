@@ -25,7 +25,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     fi
 
 # Use the appropriate base image for the production stage
-FROM node:${NODE_VERSION}-alpine
+FROM node:${NODE_VERSION}-alpine as final
 
 ENV NODE_ENV production
 

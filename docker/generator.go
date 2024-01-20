@@ -31,6 +31,19 @@ func GenerateFiles(project *language.Project) {
 	}
 
 	writeToFile("Dockerfile", dockerfileContet)
+
+	composeContent, err := executeTemplate(templates.COMPOSE, project)
+	if err != nil {
+		fmt.Println("Error executing compose.yaml template", err)
+		os.Exit(1)
+	}
+
+	if project.Language == "Python" {
+		composeContent = deleteLineFromString(composeContent, "target: final")
+	}
+
+	writeToFile("compose.yaml", composeContent)
+	writeToFile(".dockerignore", templates.DOCKERIGNORE)
 }
 
 func getDockerfileTemplate(language string) (string, error) {
@@ -79,4 +92,19 @@ func readFile(filePath string) string {
 		os.Exit(1)
 	}
 	return string(content)
+}
+
+func deleteLineFromString(input string, lineToDelete string) string {
+	lines := strings.Split(input, "\n")
+
+	var modifiedLines []string
+	for _, line := range lines {
+		if strings.TrimSpace(line) != lineToDelete {
+			modifiedLines = append(modifiedLines, line)
+		}
+	}
+
+	modifiedString := strings.Join(modifiedLines, "\n")
+
+	return modifiedString
 }
