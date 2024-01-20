@@ -138,9 +138,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// If so, exit.
 			if s == "enter" && m.FocusIndex == len(m.Inputs) {
 				docker.GenerateFiles(m.Project)
-				fmt.Println("\033[38;2;199;149;174mCREATED: \033[0m.dockerignore")
-				fmt.Println("\033[38;2;199;149;174mCREATED: \033[0mDockerfile")
-				fmt.Println("\033[38;2;199;149;174mCREATED: \033[0mcompose.yaml")
+				fmt.Printf("%v .dockerignore\n", focusedStyle.Render("CREATED:"))
+				fmt.Printf("%v Dockerfile\n", focusedStyle.Render("CREATED:"))
+				fmt.Printf("%v compose.yaml\n", focusedStyle.Render("CREATED:"))
 				return m, tea.Quit
 			}
 
@@ -201,13 +201,15 @@ func (m *Model) updateInputs(msg tea.Msg) tea.Cmd {
 		m.Project.LanguageVersion = m.Inputs[1].Value()
 		m.Project.RelativeDir = m.Inputs[2].Value()
 		m.Project.Port = m.Inputs[3].Value()
-	}
-
-	if m.Project.Language == "Node" {
+	} else if m.Project.Language == "Node" || m.Project.Language == "Python" {
 		m.Project.Language = strings.TrimSpace(m.Inputs[0].Value())
 		m.Project.LanguageVersion = m.Inputs[1].Value()
 		m.Project.StartCommand = m.Inputs[2].Value()
 		m.Project.Port = m.Inputs[3].Value()
+	} else { // rust
+		m.Project.Language = strings.TrimSpace(m.Inputs[0].Value())
+		m.Project.LanguageVersion = m.Inputs[1].Value()
+		m.Project.Port = m.Inputs[2].Value()
 	}
 
 	return tea.Batch(cmds...)

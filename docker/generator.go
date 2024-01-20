@@ -11,8 +11,9 @@ import (
 )
 
 var DockerfileTemplates = map[string]string{
-	"Go":   templates.GO,
-	"Node": templates.NODE,
+	"Go":     templates.GO,
+	"Node":   templates.NODE,
+	"Python": templates.PYTHON,
 }
 
 func GenerateFiles(project *language.Project) {
